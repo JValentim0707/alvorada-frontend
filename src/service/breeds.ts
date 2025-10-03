@@ -7,10 +7,22 @@ const getAllBreeds = async ():Promise<string[]> => {
     return data
   } catch (error) {
     console.error("Error:", error);
-    throw new Error("Sorry, we encountered some problems while retrieving your data."); // lança o erro
+    throw new Error("Sorry, we encountered some problems while retrieving your data.");
+  }
+}
+
+const getBreedImages = async (breedName: string):Promise<string[]> => {
+  try {
+    const { data } = await api.get<string[]>(`/api/breeds/${breedName}/images`)
+    
+    return data
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("Sorry, we encountered some problems while retrieving your data.");
   }
 }
 
 export {
-  getAllBreeds
+  getAllBreeds,
+  getBreedImages
 }

@@ -1,5 +1,8 @@
 <template>
-  <v-btn v-bind="props.customProps.buttonProps"> {{ props.customProps.buttonText }}</v-btn>
+  <v-btn v-bind="props.customProps.buttonProps"> 
+    <span v-if="props.customProps.buttonIcon"><v-icon :icon="props.customProps.buttonIcon"></v-icon></span>
+    <span v-if="props.customProps.buttonText"> {{ props.customProps.buttonText }} </span>
+  </v-btn>
 </template>
 
 <script lang="ts" setup>
