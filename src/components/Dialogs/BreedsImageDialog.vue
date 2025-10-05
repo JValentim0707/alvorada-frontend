@@ -2,17 +2,17 @@
   <CustomDialog :customProps="dialogProps">
     <template #dialog-content>
       <div class="w-full h-full flex justify-center items-center">
-        <CustomCard :customProps="{ cardProps: { color: '#ffffff', width: 'auto' } }">
+        <CustomCard :customProps="{ color: '#ffffff', width: 'auto' }">
           <template #custom-card-title>
             <div class="flex flex col justify-between items-center">
               <div>
                 <div class="text-2xl mb-1 capitalize font-normal font-primary">{{ props.breedDialogTitle }}</div>
                 <div class="flex w-[42px] h-[8px] bg-[#DB9945] mb-1"></div>
               </div>
-              <div v-if="!isFavorite" class="icon-container !p-4 cursor-pointer hover:bg-neutral-100 active:bg-neutral-200" @click="onAddFavoriteBreed">
+              <div v-if="!props.favoriteBreeds.includes(props.breedDialogTitle)" class="icon-container !p-4 cursor-pointer hover:bg-neutral-100 active:bg-neutral-200" @click="onAddFavoriteBreed">
                 <v-icon icon="mdi-heart-outline" size="22"></v-icon>
               </div>
-              <div v-if="isFavorite" class="icon-container !border-[#F20505] bg-[#F20505] !p-4 cursor-pointer hover:bg-neutral-100 active:bg-neutral-200">
+              <div v-else class="icon-container !border-[#F20505] bg-[#F20505] !p-4 cursor-pointer hover:bg-red-400 active:bg-neutral-200" @click="onRemoveFavoriteBreed">
                 <v-icon icon="mdi-heart" color="white" size="22"></v-icon>
               </div>
             </div>
@@ -31,8 +31,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref  } from 'vue';
-
 // Import Interfaces
 import type { IDialog } from '@/interfaces/customComponents';
 
@@ -40,7 +38,7 @@ import type { IDialog } from '@/interfaces/customComponents';
 import CustomDialog from '../customComponents/CustomDialog.vue';
 
 // Import Functions
-import { addBreedFavorite } from '@/service/favorite'
+import { addBreedFavorite, removeBreedFavorite } from '@/service/favorite'
 
 defineOptions({
   name: 'CustomBreedDialog',
@@ -48,20 +46,29 @@ defineOptions({
 
 const props = defineProps<{
   breedDialogTitle: string,
-  breedDialogImages: string[]
+  breedDialogImages: string[],
+  favoriteBreeds: string[]
 }>()
-
-const isFavorite = ref<boolean>(false)
 
 const dialogProps: IDialog = {
   dialogProps: {
   }
 }
 
+const emit = defineEmits<{
+  (e: 'updateFavoriteBreeds'): void
+}>()
+
 const onAddFavoriteBreed = async () => {
   const breedName: string = props.breedDialogTitle
   await addBreedFavorite(breedName)
-  console.log("Breed", breedName)
+  emit('updateFavoriteBreeds')
+}
+
+const onRemoveFavoriteBreed = async () => {
+  const breedName: string = props.breedDialogTitle
+  await removeBreedFavorite(breedName)
+  emit('updateFavoriteBreeds')
 }
 </script>
 <style scoped>

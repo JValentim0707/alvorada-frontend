@@ -22,15 +22,19 @@ export interface IButtonProps {
 }
 
 export interface ICardProps {
-  cardText?: string,
-  iconPath?: string,
-  iconSize?: string,
-  cardProps?: {
-    width?: string,
-    height?: string,
-    color?: string,
-    variant?: "outlined" | "flat" | "text" | "elevated" | "plain" | "tonal"; 
-  }
+  width?: string,
+  height?: string,
+  color?: string,
+  variant?: "outlined" | "flat" | "text" | "elevated" | "plain" | "tonal"; 
+}
+
+export interface ITabItem {
+  title: string,
+  value: number
+}
+export interface ITabsProps {
+  'align-tabs'?: string,
+  height?: string
 }
 
 export interface IDialog {

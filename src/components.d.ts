@@ -8,11 +8,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BreedsCard: typeof import('./components/Card/BreedsCard.vue')['default']
     BreedsImageDialog: typeof import('./components/Dialogs/BreedsImageDialog.vue')['default']
+    ContentHomeTab: typeof import('./components/HomeComponents/ContentHomeTab.vue')['default']
     CustomButton: typeof import('./components/customComponents/CustomButton.vue')['default']
     CustomCard: typeof import('./components/customComponents/CustomCard.vue')['default']
     CustomDialog: typeof import('./components/customComponents/CustomDialog.vue')['default']
     CustomNavBar: typeof import('./components/customComponents/CustomNavBar.vue')['default']
+    CustomTabs: typeof import('./components/customComponents/CustomTabs.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

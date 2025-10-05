@@ -10,12 +10,29 @@ const addBreedFavorite = async (breedName: string):Promise<undefined> => {
   }
 }
 
-const getAllFavoriteBreeds = ():Promise<string[]> => {
-  const { data } = api.get<string[]>("/api/favorites")
+const getAllFavoriteBreeds = async ():Promise<string[]> => {
+  try {
+    const { data } = await api.get<string[]>("/api/favorites")
 
-  return data
+    return data
+  } catch (error) {
+    console.log(error)
+    throw new Error("Something unexpected happened, try again later")
+  }
+}
+
+const removeBreedFavorite = async (breedName: string):Promise<undefined> => {
+  try {
+    await api.delete<string[]>(`/api/favorites/${breedName}`)
+    return
+  } catch (error) {
+    console.log(error)
+    throw new Error("Something unexpected happened, try again later")
+  }
 }
 
 export {
-  addBreedFavorite
+  addBreedFavorite,
+  getAllFavoriteBreeds,
+  removeBreedFavorite
 }
