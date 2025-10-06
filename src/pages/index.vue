@@ -8,13 +8,13 @@
       <div class="!pt-[120px] !pl-[80px]">
         <div class="text-5xl font-bold">Discover the <br> World of Dog Breeds</div>
         <div class="text-xl font-light !py-4">Because every dog is unique, but the right knowledge <br> makes a difference</div>
-        <CustomButton class="font-primary !font-normal" :customProps="buttonProps" @click="scrollToSection('dogs-breeds')"></CustomButton>
+        <CustomButton class="font-primary !font-normal" buttonText="Browse Breeds" :customProps="buttonProps" @click="scrollToSection('dogs-breeds')"></CustomButton>
       </div>
     </div>
   </div>
   <div id="dogs-breeds" class="flex flex-col w-full justify-center items-center bg-white !p-8">
     <div class="flex flex-col w-[60%]">
-      <ContentHomeTab :allBreeds="allBreeds" :favoriteBreeds="favoriteBreeds" @openBreedDialog="openDogBreedDialog"></ContentHomeTab>
+      <ContentHomeTab :allBreeds="allBreeds" :favoriteBreeds="favoriteBreeds" :breedsLoader="breedsLoader" @openBreedDialog="openDogBreedDialog"></ContentHomeTab>
     </div>
   </div>
   <BreedsImageDialog 
@@ -22,6 +22,7 @@
     :breedDialogImages="breedImages" 
     :favoriteBreeds="favoriteBreeds" 
     :breedDialogTitle="selectedBreed"
+    :breedimagesLoader="breedimagesLoader"
     @updateFavoriteBreeds="updateFavoriteBreeds"
   />
 </template>
@@ -56,12 +57,9 @@ const navBarProps: INavBarProps = {
 }
 
 const buttonProps: IButtonProps = {
-  buttonText: "Browse Breeds",
-  buttonProps: {
-    color: "#DB9945",
-    height: "50",
-    "append-icon": "$next"
-  }
+  color: "#DB9945",
+  height: "50",
+  "append-icon": "$next"
 }
 
 const allBreeds = ref<string[]>([])
@@ -69,16 +67,22 @@ const favoriteBreeds = ref<string[]>([])
 const breedImages = ref<string[]>([])
 const selectedBreed = ref<string>("")
 const openDogDialog = ref<boolean>(false)
+const breedsLoader = ref<boolean>(false)
+const breedimagesLoader = ref<boolean>(false)
 
 onMounted(async () => {
+  breedsLoader.value = true
   allBreeds.value = await getAllBreeds()
   await updateFavoriteBreeds()
+  breedsLoader.value = false
 })
 
 const openDogBreedDialog = async (breedname: string) => {
+  breedimagesLoader.value = true
   openDogDialog.value = true
   selectedBreed.value = breedname
   breedImages.value = await getBreedImages(breedname)
+  breedimagesLoader.value = false
 }
 
 const scrollToSection = (archorIdName: string) => {

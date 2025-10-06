@@ -9,16 +9,12 @@ export interface INavBarProps {
 }
 
 export interface IButtonProps {
-  buttonText?: string,
-  buttonIcon?: string,
-  buttonIconSize?: string,
-  buttonProps?: {
-    width?: string,
-    height?: string,
-    color?: string,
-    density?: "default" | "comfortable" | "compact"
-    "append-icon"?: string
-  }
+  width?: string,
+  height?: string,
+  color?: string,
+  loading?: boolean,
+  density?: "default" | "comfortable" | "compact"
+  "append-icon"?: string
 }
 
 export interface ICardProps {
@@ -37,8 +33,18 @@ export interface ITabsProps {
   height?: string
 }
 
+export interface ITextFieldProps {
+  label: string,
+  density?: 'default' | 'comfortable' | 'compact',
+  variant?: 'outlined' | 'plain' | 'underlined' | 'filled' | 'solo' | 'solo-inverted' | 'solo-filled',
+  'append-inner-icon'?: string,
+}
+
+export interface ILoaderProps {
+  indeterminate: boolean,
+  size: string
+}
+
 export interface IDialog {
-  dialogText?: string
-  dialogProps?: {
-  }
+  // When need we can add props here
 }

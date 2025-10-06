@@ -1,7 +1,7 @@
 <template>
-  <v-btn v-bind="props.customProps.buttonProps"> 
-    <span v-if="props.customProps.buttonIcon"><v-icon :icon="props.customProps.buttonIcon"></v-icon></span>
-    <span v-if="props.customProps.buttonText"> {{ props.customProps.buttonText }} </span>
+  <v-btn v-bind="props.customProps"> 
+    <span v-if="props.buttonIcon"><v-icon :icon="props.buttonIcon"></v-icon></span>
+    <span v-if="props.buttonText"> {{ props.buttonText }} </span>
   </v-btn>
 </template>
 
@@ -14,6 +14,9 @@ defineOptions({
 
 
 const props = defineProps<{
+  buttonText?: string,
+  buttonIcon?: string,
+  buttonIconSize?: string,
   customProps: IButtonProps
 }>()
 

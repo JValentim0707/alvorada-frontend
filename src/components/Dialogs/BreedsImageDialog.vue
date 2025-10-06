@@ -18,9 +18,12 @@
             </div>
           </template>
           <template #custom-card-content>
-            <div class="flex !gap-6">
-              <div class="flex w-[300px] h-[300px]" v-for="breedImage in breedDialogImages">
-                <v-img cover position="center center" :src="breedImage"></v-img>
+            <CustomLoader v-if="breedimagesLoader" :customProps="loaderProps"></CustomLoader>
+            <div v-else>
+              <div class="flex !gap-6">
+                <div class="flex flex-col w-[300px] h-[300px]" v-for="breedImage in breedDialogImages">
+                  <v-img cover position="center center" :src="breedImage"></v-img>
+                </div>
               </div>
             </div>
           </template>
@@ -31,11 +34,18 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
+
+// Import Utils Lib
+import JSZip, { forEach } from "jszip";
+
 // Import Interfaces
-import type { IDialog } from '@/interfaces/customComponents';
+import type { IDialog, ILoaderProps, IButtonProps } from '@/interfaces/customComponents';
 
 // Import Components
 import CustomDialog from '../customComponents/CustomDialog.vue';
+import CustomLoader from '../customComponents/CustomLoader.vue';
+import CustomButton from '../customComponents/CustomButton.vue';
 
 // Import Functions
 import { addBreedFavorite, removeBreedFavorite } from '@/service/favorite'
@@ -47,12 +57,23 @@ defineOptions({
 const props = defineProps<{
   breedDialogTitle: string,
   breedDialogImages: string[],
-  favoriteBreeds: string[]
+  favoriteBreeds: string[],
+  breedimagesLoader: boolean
 }>()
 
 const dialogProps: IDialog = {
-  dialogProps: {
-  }
+}
+
+const buttonProps = ref<IButtonProps>({
+  color: "#DB9945",
+  height: "40",
+  "append-icon": "mdi-download",
+  loading: false,
+})
+
+const loaderProps: ILoaderProps = {
+  indeterminate: true,
+  size: '45'
 }
 
 const emit = defineEmits<{
@@ -69,6 +90,38 @@ const onRemoveFavoriteBreed = async () => {
   const breedName: string = props.breedDialogTitle
   await removeBreedFavorite(breedName)
   emit('updateFavoriteBreeds')
+}
+
+const downloadImages = async () => {
+  buttonProps.value.loading = true
+  const zip = new JSZip();
+
+  const breedName: string = props.breedDialogTitle
+  const imagesToDownload: string[] = props.breedDialogImages
+
+  let imageIndex: number = 0
+  for (const image of imagesToDownload) {
+    imageIndex++
+
+    const res = await fetch(image)
+    const blob: Blob = await res.blob()
+
+    const name: string = `${breedName}-${imageIndex}.jpg`
+    zip.file(name, blob)
+  }
+
+  const content: Blob = await zip.generateAsync({ type: "blob" });
+
+  const link: HTMLAnchorElement = document.createElement("a")
+
+  link.href = URL.createObjectURL(content)
+  link.download = "imagens.zip"
+  document.body.appendChild(link)
+
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(link.href)
+   buttonProps.value.loading = false
 }
 </script>
 <style scoped>
