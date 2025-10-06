@@ -36,16 +36,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-// Import Utils Lib
-import JSZip, { forEach } from "jszip";
-
 // Import Interfaces
-import type { IDialog, ILoaderProps, IButtonProps } from '@/interfaces/customComponents';
+import type { IDialog, ILoaderProps, ISnackbarProps } from '@/interfaces/customComponents';
 
 // Import Components
 import CustomDialog from '../customComponents/CustomDialog.vue';
 import CustomLoader from '../customComponents/CustomLoader.vue';
-import CustomButton from '../customComponents/CustomButton.vue';
 
 // Import Functions
 import { addBreedFavorite, removeBreedFavorite } from '@/service/favorite'
@@ -64,64 +60,50 @@ const props = defineProps<{
 const dialogProps: IDialog = {
 }
 
-const buttonProps = ref<IButtonProps>({
-  color: "#DB9945",
-  height: "40",
-  "append-icon": "mdi-download",
-  loading: false,
-})
-
 const loaderProps: ILoaderProps = {
   indeterminate: true,
   size: '45'
 }
+
+const snackbarProps: ISnackbarProps = {
+  timeout: 4000,
+  color: "#46C66C",
+}
+
+const snackbarErrorProps: ISnackbarProps = {
+  timeout: 4000,
+  color: "#CD283A",
+}
+
+const showSnackbarSucess = ref<boolean>(false)
+const showSnackbarError = ref<boolean>(false)
 
 const emit = defineEmits<{
   (e: 'updateFavoriteBreeds'): void
 }>()
 
 const onAddFavoriteBreed = async () => {
-  const breedName: string = props.breedDialogTitle
-  await addBreedFavorite(breedName)
-  emit('updateFavoriteBreeds')
+  try {    
+    const breedName: string = props.breedDialogTitle
+    await addBreedFavorite(breedName)
+    emit('updateFavoriteBreeds')
+    showSnackbarSucess.value = true
+  } catch (error) {
+    console.log("Error:", error)
+    showSnackbarError.value = true
+  }
 }
 
 const onRemoveFavoriteBreed = async () => {
-  const breedName: string = props.breedDialogTitle
-  await removeBreedFavorite(breedName)
-  emit('updateFavoriteBreeds')
-}
-
-const downloadImages = async () => {
-  buttonProps.value.loading = true
-  const zip = new JSZip();
-
-  const breedName: string = props.breedDialogTitle
-  const imagesToDownload: string[] = props.breedDialogImages
-
-  let imageIndex: number = 0
-  for (const image of imagesToDownload) {
-    imageIndex++
-
-    const res = await fetch(image)
-    const blob: Blob = await res.blob()
-
-    const name: string = `${breedName}-${imageIndex}.jpg`
-    zip.file(name, blob)
+  try {    
+    const breedName: string = props.breedDialogTitle
+    await removeBreedFavorite(breedName)
+    showSnackbarSucess.value = true
+    emit('updateFavoriteBreeds')
+  } catch (error) {
+    console.log("Error:", error)
+    showSnackbarError.value = true
   }
-
-  const content: Blob = await zip.generateAsync({ type: "blob" });
-
-  const link: HTMLAnchorElement = document.createElement("a")
-
-  link.href = URL.createObjectURL(content)
-  link.download = "imagens.zip"
-  document.body.appendChild(link)
-
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(link.href)
-   buttonProps.value.loading = false
 }
 </script>
 <style scoped>

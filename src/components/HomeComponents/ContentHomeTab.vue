@@ -31,7 +31,7 @@
                 <BreedsCard :favoriteBreeds="props.favoriteBreeds" :breedName="breed" @click="onSelectBreed(breed)"></BreedsCard>
               </div>
             </div>
-            <div v-else class="!min-h-[500px] font-primary text-capitalize flex flex-col justify-center items-center">
+            <div v-else class="!min-h-[500px] font-primary text-capitalize flex flex-col justify-center items-center text-gray-400">
               <div><v-icon icon="mdi-view-list" size="55"></v-icon></div>
               <span>no records found</span>
             </div>

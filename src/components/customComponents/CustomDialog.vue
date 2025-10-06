@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-bind="props.customProps.dialogProps">
+  <v-dialog v-bind="props.customProps">
     <slot name="dialog-content" />
   </v-dialog>
 </template>

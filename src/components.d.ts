@@ -18,6 +18,7 @@ declare module 'vue' {
     CustomNavBar: typeof import('./components/customComponents/CustomNavBar.vue')['default']
     CustomTabs: typeof import('./components/customComponents/CustomTabs.vue')['default']
     CustomTextField: typeof import('./components/customComponents/CustomTextField.vue')['default']
+    CustSnackbar: typeof import('./components/customComponents/CustSnackbar.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

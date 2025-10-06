@@ -25,6 +25,22 @@
     :breedimagesLoader="breedimagesLoader"
     @updateFavoriteBreeds="updateFavoriteBreeds"
   />
+  <CustSnackbar v-model="showSuccessSnackbar" :customProps="snackbarProps">
+    <template #snackbar-content>
+      <div class="font-primary text-white flex justify-center items-baseline">
+        <v-icon icon="mdi-check-circle" color="white" size="20"></v-icon>
+        <div class="ml-2 text-lg">Data loaded successfully</div>
+      </div>
+    </template>
+  </CustSnackbar>
+  <CustSnackbar v-model="showErrorSnackbar" :customProps="snackbarErrorProps">
+    <template #snackbar-content>
+      <div class="font-primary text-white flex justify-center items-baseline">
+        <v-icon icon="mdi-close-circle" color="white" size="20"></v-icon>
+        <div class="ml-2 text-lg">We were unable to load your data.</div>
+      </div>
+    </template>
+  </CustSnackbar>
 </template>
 
 <script lang="ts" setup>
@@ -39,12 +55,13 @@ import { getAllFavoriteBreeds } from '@/service/favorite';
 import CustomNavBar from '@/components/customComponents/CustomNavBar.vue';
 import CustomButton from '@/components/customComponents/CustomButton.vue';
 import ContentHomeTab from '@/components/HomeComponents/ContentHomeTab.vue';
+import CustSnackbar from '@/components/customComponents/CustSnackbar.vue';
 
 // Import Dialogs
 import BreedsImageDialog from '@/components/Dialogs/BreedsImageDialog.vue';
 
 // Import Interfaces
-import type { INavBarProps, IButtonProps } from '@/interfaces/customComponents';
+import type { INavBarProps, IButtonProps, ISnackbarProps } from '@/interfaces/customComponents';
 
 const navBarProps: INavBarProps = {
   iconPath: LogoBreeds,
@@ -62,6 +79,16 @@ const buttonProps: IButtonProps = {
   "append-icon": "$next"
 }
 
+const snackbarProps: ISnackbarProps = {
+  timeout: 4000,
+  color: "#46C66C",
+}
+
+const snackbarErrorProps: ISnackbarProps = {
+  timeout: 4000,
+  color: "#CD283A",
+}
+
 const allBreeds = ref<string[]>([])
 const favoriteBreeds = ref<string[]>([])
 const breedImages = ref<string[]>([])
@@ -69,12 +96,20 @@ const selectedBreed = ref<string>("")
 const openDogDialog = ref<boolean>(false)
 const breedsLoader = ref<boolean>(false)
 const breedimagesLoader = ref<boolean>(false)
+const showSuccessSnackbar = ref<boolean>(false)
+const showErrorSnackbar = ref<boolean>(false)
 
 onMounted(async () => {
-  breedsLoader.value = true
-  allBreeds.value = await getAllBreeds()
-  await updateFavoriteBreeds()
-  breedsLoader.value = false
+  try {
+    breedsLoader.value = true
+    allBreeds.value = await getAllBreeds()
+    await updateFavoriteBreeds()
+    breedsLoader.value = false
+    showSuccessSnackbar.value = true
+  } catch (error) {
+    breedsLoader.value = false
+    showErrorSnackbar.value = true
+  }
 })
 
 const openDogBreedDialog = async (breedname: string) => {

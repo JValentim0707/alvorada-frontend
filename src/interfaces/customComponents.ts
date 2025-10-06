@@ -41,8 +41,14 @@ export interface ITextFieldProps {
 }
 
 export interface ILoaderProps {
-  indeterminate: boolean,
+  indeterminate?: boolean,
   size: string
+}
+
+export interface ISnackbarProps {
+  timeout?: number,
+  color: string,
+  'max-width'?: string,
 }
 
 export interface IDialog {
